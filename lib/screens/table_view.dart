@@ -8,7 +8,7 @@ import '../controllers/calendar_data_controller.dart';
 class TableView extends StatelessWidget {
   TableView({super.key});
 
-  final CalendarController controller = Get.find();
+  final CalendarDataController controller = Get.find();
   final ScrollController scrollController = ScrollController();
   final List<GlobalKey> eventKeys = [];
   final TextEditingController searchController = TextEditingController();

@@ -7,8 +7,8 @@ import '../controllers/senior_calendar_tab_controller.dart';
 
 class SeniorCalendar extends StatelessWidget {
   SeniorCalendar({super.key});
-  final SeniorCalendarController controller =
-      Get.put(SeniorCalendarController());
+  final SeniorCalendarTabController controller =
+      Get.put(SeniorCalendarTabController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
