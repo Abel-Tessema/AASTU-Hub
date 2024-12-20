@@ -9,7 +9,7 @@ import '../widgets/glowing_dot_indicator.dart';
 
 class TimeLineView extends StatelessWidget {
   TimeLineView({super.key});
-  final CalendarController controller = Get.put(CalendarController());
+  final CalendarDataController controller = Get.put(CalendarDataController());
   final List<GlobalKey> eventKeys = [];
   final ScrollController scrollController = ScrollController();
   final TextEditingController searchController = TextEditingController();

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class CalendarController extends GetxController {
+class CalendarDataController extends GetxController {
   final SupabaseClient supabase = Supabase.instance.client;
 
   var isLoading = true.obs;

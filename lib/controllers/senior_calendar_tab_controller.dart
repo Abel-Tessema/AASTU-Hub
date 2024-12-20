@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SeniorCalendarController extends GetxController
+class SeniorCalendarTabController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   @override
