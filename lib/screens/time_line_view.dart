@@ -17,11 +17,17 @@ class TimeLineView extends StatelessWidget {
   final RxInt highlightedEventIndex = (-1).obs; // Track highlighted event
   final RxList<int> searchResultIndices = <int>[].obs; // Track search results
   final RxInt currentSearchResultIndex = 0.obs; // Current index in results
+  final RxString scrollDirection =
+      ''.obs; // '' for no direction, 'up' or 'down'
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        elevation: 0,
+        shadowColor: Colors.transparent,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(25.0),
           child: Padding(
@@ -110,38 +116,21 @@ class TimeLineView extends StatelessWidget {
                             : null,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text(event.title),
-                              content: Text(
-                                  event.description ?? 'No details available.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Close'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            Text(
-                              event.title,
-                              style: TextStyle(
-                                  color:
-                                      _shouldGlow(event) ? Colors.blue : null,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              DateFormat.yMMMMd().format(event.date),
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
+                      child: Column(
+                        children: [
+                          Text(
+                            event.title,
+                            style: TextStyle(
+                                color: _shouldGlow(event)
+                                    ? const Color(0xFF4B39EF)
+                                    : null,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            DateFormat.yMMMMd().format(event.date),
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
                     );
                   });
@@ -152,15 +141,16 @@ class TimeLineView extends StatelessWidget {
                     final isHighlighted = index == highlightedEventIndex.value;
                     return _shouldGlow(event)
                         ? const GlowingDotIndicator(
-                            color: Colors.blue,
+                            color: Color(0xFF4B39EF),
                             size: 24.0,
-                            glowColor: Colors.blueAccent,
+                            glowColor: Color(0xFF4B39EF),
                           )
                         : DotIndicator(
                             color: _getEventColor(event.date),
                             border: Border.all(
                                 color: isHighlighted
-                                    ? _getEventColor(event.date) == Colors.blue
+                                    ? _getEventColor(event.date) ==
+                                            const Color(0xFF4B39EF)
                                         ? Colors.red
                                         : Colors.lightBlueAccent
                                     : Colors.transparent,
@@ -169,8 +159,14 @@ class TimeLineView extends StatelessWidget {
                           );
                   });
                 },
-                connectorBuilder: (context, index, connectorType) =>
-                    const SolidLineConnector(),
+                connectorBuilder: (context, index, connectorType) {
+                  final event = controller.events[index];
+                  return SolidLineConnector(
+                    color: _shouldGlow(event)
+                        ? const Color(0xFF4B39EF)
+                        : Colors.grey,
+                  );
+                },
                 itemCount: controller.events.length,
               ),
             ),
@@ -178,14 +174,20 @@ class TimeLineView extends StatelessWidget {
         );
       }),
       floatingActionButton: Obx(() {
-        return isScrolledAwayFromCurrent.value
-            ? FloatingActionButton(
-                onPressed: () {
-                  scrollToRelevantEvent();
-                },
-                child: const Icon(Icons.today),
-              )
-            : const SizedBox.shrink();
+        if (isScrolledAwayFromCurrent.value) {
+          return FloatingActionButton(
+            onPressed: () {
+              scrollToRelevantEvent();
+            },
+            child: Icon(
+              scrollDirection.value != 'up'
+                  ? Icons.arrow_drop_up_rounded
+                  : Icons.arrow_drop_down_rounded,
+              size: 50,
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       }),
     );
   }
@@ -193,7 +195,9 @@ class TimeLineView extends StatelessWidget {
   Color _getEventColor(DateTime eventDate) {
     final today = DateTime.now();
     if (eventDate.isBefore(today)) return Colors.grey; // Past events
-    if (eventDate.isAfter(today)) return Colors.blue; // Future events
+    if (eventDate.isAfter(today)) {
+      return const Color(0xFF4B39EF); // Future events
+    }
     return Colors.transparent; // Current event handled with glow
   }
 
@@ -298,8 +302,18 @@ class TimeLineView extends StatelessWidget {
         final screenHeight =
             MediaQueryData.fromView(WidgetsBinding.instance.window).size.height;
 
-        isScrolledAwayFromCurrent.value =
-            position.dy < 0 || position.dy > screenHeight;
+        final isAboveScreen = position.dy < 0;
+        final isBelowScreen = position.dy > screenHeight;
+
+        if (isAboveScreen) {
+          scrollDirection.value = 'down'; // Scrolled upwards
+        } else if (isBelowScreen) {
+          scrollDirection.value = 'up'; // Scrolled downwards
+        } else {
+          scrollDirection.value = ''; // Current day is visible
+        }
+
+        isScrolledAwayFromCurrent.value = isAboveScreen || isBelowScreen;
       }
     }
   }

@@ -18,6 +18,8 @@ class TableView extends StatelessWidget {
   final RxInt highlightedEventIndex = (-1).obs; // Highlighted event index
   final RxList<int> searchResultIndices = <int>[].obs; // Search result indices
   final RxInt currentSearchResultIndex = 0.obs; // Current search result index
+  final RxString scrollDirection =
+      ''.obs; // '' for no direction, 'up' or 'down'
 
   @override
   Widget build(BuildContext context) {
@@ -147,12 +149,20 @@ class TableView extends StatelessWidget {
         if (renderObject is RenderBox) {
           final position = renderObject.localToGlobal(Offset.zero);
           final screenHeight =
-              MediaQueryData.fromView(WidgetsBinding.instance.window)
-                  .size
-                  .height;
+              MediaQueryData.fromView(View.of(context)).size.height;
 
-          isScrolledAwayFromCurrent.value =
-              position.dy < 0 || position.dy > screenHeight;
+          final isAboveScreen = position.dy < 0;
+          final isBelowScreen = position.dy > screenHeight;
+
+          if (isAboveScreen) {
+            scrollDirection.value = 'down'; // Scrolled upwards
+          } else if (isBelowScreen) {
+            scrollDirection.value = 'up'; // Scrolled downwards
+          } else {
+            scrollDirection.value = ''; // Current day is visible
+          }
+
+          isScrolledAwayFromCurrent.value = isAboveScreen || isBelowScreen;
         }
       }
     }
@@ -164,6 +174,10 @@ class TableView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        elevation: 0,
+        shadowColor: Colors.transparent,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(30.0),
           child: Padding(
@@ -303,12 +317,20 @@ class TableView extends StatelessWidget {
         );
       }),
       floatingActionButton: Obx(() {
-        return isScrolledAwayFromCurrent.value
-            ? FloatingActionButton(
-                onPressed: scrollToRelevantEvent,
-                child: const Icon(Icons.today),
-              )
-            : const SizedBox.shrink();
+        if (isScrolledAwayFromCurrent.value) {
+          return FloatingActionButton(
+            onPressed: () {
+              scrollToRelevantEvent();
+            },
+            child: Icon(
+              scrollDirection.value != 'up'
+                  ? Icons.arrow_drop_up_rounded
+                  : Icons.arrow_drop_down_rounded,
+              size: 50,
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       }),
     );
   }
