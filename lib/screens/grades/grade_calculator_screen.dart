@@ -1,7 +1,8 @@
+import 'package:aastu_hub/widgets/loading_animation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/grade_calculator_controller.dart';
+import '../../controllers/grade_calculator_controller.dart';
 
 class GradeCalculator extends StatelessWidget {
   const GradeCalculator({super.key});
@@ -14,23 +15,26 @@ class GradeCalculator extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Grade Calculator'),
         actions: [
-          Obx(() => ElevatedButton(
-                onPressed: controller.saveScores,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: controller.semester.value == '' ||
-                          controller.year.value == ''
-                      ? Colors.grey[300]
-                      : null,
-                ),
-                child: Text(
-                  'Save Scores',
-                  style: TextStyle(
-                      color: controller.semester.value == '' ||
-                              controller.year.value == ''
-                          ? Colors.grey
-                          : Colors.white),
-                ),
-              )),
+          Obx(() => controller.isLoading.value
+              ? LoadingAnimatedButton(
+                  child: const Text('Saving Scores'), onTap: () {})
+              : ElevatedButton(
+                  onPressed: controller.saveScores,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: controller.semester.value == '' ||
+                            controller.year.value == ''
+                        ? Colors.grey[300]
+                        : null,
+                  ),
+                  child: Text(
+                    'Save Scores',
+                    style: TextStyle(
+                        color: controller.semester.value == '' ||
+                                controller.year.value == ''
+                            ? Colors.grey
+                            : Colors.white),
+                  ),
+                )),
         ],
       ),
       body: Padding(

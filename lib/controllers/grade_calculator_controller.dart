@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../services/dio_service.dart';
 import 'dashboard_controller.dart';
 
 class GradeCalculatorController extends GetxController {
@@ -14,6 +15,8 @@ class GradeCalculatorController extends GetxController {
 
   var semester = ''.obs;
   var year = ''.obs;
+
+  var isLoading = false.obs;
 
   final gradeScale = {
     'A+': 4.0,
@@ -55,9 +58,9 @@ class GradeCalculatorController extends GetxController {
   }
 
   Future<void> saveScores() async {
-    final supabase = Supabase.instance.client;
+    isLoading.value = true;
+    final currentUser = Supabase.instance.client.auth.currentUser;
 
-    final currentUser = supabase.auth.currentUser;
     if (currentUser == null) {
       Get.snackbar(
         "Error",
@@ -86,7 +89,11 @@ class GradeCalculatorController extends GetxController {
       final credits = int.tryParse(course['credits']) ?? 0;
       final gradeValue = gradeScale[course['grade']] ?? 0.0;
 
-      final response = await supabase.from('Grades').insert({
+      // Construct the request path
+      const path = "/Grades";
+
+      // Create the data payload
+      final payload = {
         'userId': currentUser.id,
         'courseName': course['name'],
         'creditHour': credits,
@@ -94,21 +101,27 @@ class GradeCalculatorController extends GetxController {
         'semester': semester.value,
         'year': int.tryParse(year.value),
         'gpaWeight': gradeValue * credits,
-      }).select();
+      };
 
-      if (response.isEmpty) {
-        Get.snackbar(
-          "Error",
-          "Failed to save scores",
-        );
-        return;
-      }
+      await DioService.dioPost(
+        path: path,
+        data: payload,
+        onSuccess: (response) {
+          Get.snackbar(
+            "Success",
+            "Scores saved successfully!",
+          );
+          Get.find<GradesController>().fetchGrades();
+        },
+        onFailure: (error, response) {
+          Get.snackbar(
+            "Error",
+            "Failed to save scores: $error",
+          );
+        },
+      );
     }
 
-    Get.snackbar(
-      "Success",
-      "Scores saved successfully!",
-    );
-    Get.find<GradesController>().fetchGrades();
+    isLoading.value = false;
   }
 }

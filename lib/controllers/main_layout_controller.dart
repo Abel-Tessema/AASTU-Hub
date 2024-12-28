@@ -1,10 +1,9 @@
-import 'package:aastu_hub/screens/grade_calculator_screen.dart';
-import 'package:aastu_hub/screens/senior_calendar_screen.dart';
+import 'package:aastu_hub/screens/cafe/cafe_schedule_screen.dart';
+import 'package:aastu_hub/screens/calendar/senior_calendar_screen.dart';
+import 'package:aastu_hub/screens/grades/grade_calculator_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-
-import '../screens/dashboard_screen.dart';
 
 class MainLayoutController extends GetxController {
   late PersistentTabController controller;
@@ -19,7 +18,7 @@ class MainLayoutController extends GetxController {
   final List<Widget> screens = [
     SeniorCalendar(),
     const GradeCalculator(),
-    DashboardScreen(),
+    CafeScheduleScreen(),
   ];
 
   final List<PersistentBottomNavBarItem> navBarItems = [

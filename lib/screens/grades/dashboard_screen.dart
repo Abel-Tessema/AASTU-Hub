@@ -2,9 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../config/constants.dart';
-import '../controllers/dashboard_controller.dart';
-import '../models/grade_data.dart';
+import '../../config/constants.dart';
+import '../../controllers/dashboard_controller.dart';
+import '../../models/grade_data.dart';
 
 class DashboardScreen extends StatelessWidget {
   final GradesController controller = Get.put(GradesController());
@@ -39,18 +39,66 @@ class DashboardScreen extends StatelessWidget {
           selectedYear.value = selectedYear.value.isNotEmpty
               ? selectedYear.value
               : groupedByYear.keys.last;
-          return Column(
-            children: [
-              _buildYearBarGraph(context, groupedByYear),
-              const SizedBox(height: 16),
-              _buildYearDetails(context, groupedByYear[selectedYear.value]!),
-            ],
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('CGPA Over The Years',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    Flexible(
+                        fit: FlexFit.loose,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: kCardShadow()),
+                              child:
+                                  _buildYearBarGraph(context, groupedByYear)),
+                        )),
+                    const SizedBox(height: 16),
+                    Flexible(
+                        fit: FlexFit.loose,
+                        child: _buildYearDetails(
+                            context, groupedByYear[selectedYear.value]!)),
+                    const SizedBox(height: 16),
+                    // Expanded(
+                    //     child:
+                    //         GradeStatisticsWidget(gradeDataList: controller.grades))
+                  ],
+                ),
+              ),
+            ),
           );
         }
 
         // Handle single year
         selectedYear.value = groupedByYear.keys.first;
-        return _buildYearDetails(context, groupedByYear[selectedYear.value]!);
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                  fit: FlexFit.loose,
+                  child: _buildYearDetails(
+                      context, groupedByYear[selectedYear.value]!)),
+              const SizedBox(height: 16),
+              // Flexible(
+              //     fit: FlexFit.loose,
+              //     child:
+              //         GradeStatisticsWidget(gradeDataList: controller.grades))
+            ],
+          ),
+        );
       }),
     );
   }
@@ -63,15 +111,21 @@ class DashboardScreen extends StatelessWidget {
       selectedSemester.value = selectedSemester.value.isNotEmpty
           ? selectedSemester.value
           : groupedBySemester.keys.last;
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildSemesterPieChart(context, groupedBySemester),
-            const SizedBox(height: 16),
-            _buildCourseBarGraph(
-                context, groupedBySemester[selectedSemester.value]!),
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Semester Analysis',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          _buildSemesterPieChart(context, groupedBySemester),
+          const SizedBox(height: 16),
+          _buildCourseBarGraph(
+              context, groupedBySemester[selectedSemester.value]!),
+        ],
       );
     }
 
@@ -105,24 +159,32 @@ class DashboardScreen extends StatelessWidget {
       BuildContext context, Map<String, List<GradeData>> groupedByYear) {
     final colors = List.generate(groupedByYear.length,
         (index) => Colors.primaries[index % Colors.primaries.length]);
+
+    // Calculate CGPA for each year
     final yearCgpa = groupedByYear.entries.map((entry) {
       final totalCredits =
           entry.value.fold(0.0, (sum, grade) => sum + grade.creditHour!);
-      final totalWeightedGpa = entry.value.fold(
-          0.0, (sum, grade) => sum + grade.gpaWeight! * grade.creditHour!);
+
+      final totalWeightedGpa = entry.value
+          .fold(0.0, (sum, grade) => sum + (grade.grade! * grade.creditHour!));
+
+      // Compute CGPA for the year
       final cgpa = totalCredits > 0 ? totalWeightedGpa / totalCredits : 0.0;
-      return cgpa;
+      return cgpa.toPrecision(2); // This will naturally be out of 4.0
     }).toList();
+
+    final years = groupedByYear.keys.toList();
 
     return GestureDetector(
       onTapDown: (details) {
         // Detect tapped bar and update the selected year
         final tapIndex = details.localPosition.dx ~/
             (MediaQuery.of(context).size.width / groupedByYear.length);
-        selectedYear.value = groupedByYear.keys.toList()[tapIndex];
+        selectedYear.value = years[tapIndex];
       },
       child: BarChart(
         BarChartData(
+          barTouchData: BarTouchData(touchTooltipData: BarTouchTooltipData()),
           barGroups: yearCgpa
               .asMap()
               .entries
@@ -133,12 +195,46 @@ class DashboardScreen extends StatelessWidget {
                     BarChartRodData(
                       toY: entry.value,
                       color: colors[entry.key],
-                      width: 16,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      width: MediaQuery.of(context).size.width /
+                          groupedByYear.length /
+                          2.5,
                     ),
                   ],
                 ),
               )
               .toList(),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                interval: 0.5, // Adjust interval as needed
+                getTitlesWidget: (value, meta) {
+                  return Text(
+                    value.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 10),
+                  );
+                },
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  if (value.toInt() < years.length) {
+                    return Text(
+                      years[value.toInt()],
+                      style: const TextStyle(fontSize: 10),
+                    );
+                  }
+                  return const Text('');
+                },
+              ),
+            ),
+          ),
+          gridData: const FlGridData(show: true),
         ),
       ),
     );
@@ -165,11 +261,12 @@ class DashboardScreen extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text('Semester ${selectedSemester.value}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              )),
+          child:
+              Text('Semester ${selectedSemester.value}, ${selectedYear.value}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
         ),
         Padding(
           padding: const EdgeInsets.all(12.0),

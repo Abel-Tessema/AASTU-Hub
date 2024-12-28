@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../controllers/calendar_data_controller.dart';
+import '../../../controllers/calendar_data_controller.dart';
 
 class TableView extends StatelessWidget {
   TableView({super.key});

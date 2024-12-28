@@ -14,7 +14,7 @@ class LoadingAnimatedButton extends StatefulWidget {
   final double borderWidth;
 
   const LoadingAnimatedButton(
-      {Key? key,
+      {super.key,
       required this.child,
       required this.onTap,
       this.width = 200,
@@ -23,8 +23,7 @@ class LoadingAnimatedButton extends StatefulWidget {
       this.borderColor = Colors.white,
       this.borderRadius = 15.0,
       this.borderWidth = 3.0,
-      this.duration = const Duration(milliseconds: 1500)})
-      : super(key: key);
+      this.duration = const Duration(milliseconds: 1500)});
 
   @override
   State<LoadingAnimatedButton> createState() => _LoadingAnimatedButtonState();
@@ -109,13 +108,18 @@ class LoadingPainter extends CustomPainter {
           .createShader(rect);
 
     final path = Path.combine(
-        PathOperation.xor,
-        Path()
-          ..addRRect(
-              RRect.fromRectAndRadius(rect, Radius.circular(borderRadius))),
-        Path()
-          ..addRRect(RRect.fromRectAndRadius(
-              rect.deflate(3.5), Radius.circular(borderRadius))));
+      PathOperation.xor,
+      Path()
+        ..addRRect(
+            RRect.fromRectAndRadius(rect, Radius.circular(borderRadius))),
+      Path()
+        ..addRRect(
+          RRect.fromRectAndRadius(
+            rect.deflate(3.5),
+            Radius.circular(borderRadius),
+          ),
+        ),
+    );
     canvas.drawRRect(
         RRect.fromRectAndRadius(
             rect.deflate(1.5), Radius.circular(borderRadius)),
@@ -131,3 +135,25 @@ class LoadingPainter extends CustomPainter {
     return true;
   }
 }
+
+// var n = {
+//   "user": {
+//     "id": 185299,
+//     "first_name": 251911299848,
+//     "last_name": 251911299848,
+//     "email": null,
+//     "phone_number": 251911299848,
+//     "profile_picture": null,
+//     "subscriber": {
+//       "id": 149182,
+//       "isFromSMS": false,
+//       "status": "inactive",
+//       "due_date": 6,
+//       "subscription_id": 18
+//     },
+//     "created_at": "2024-08-06T09:53:04.000Z",
+//     "updated_at": "2024-08-06T09:53:04.000Z"
+//   },
+//   "iat": 1734874556,
+//   "exp": 1737466556
+// };

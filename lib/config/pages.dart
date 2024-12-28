@@ -1,10 +1,11 @@
-import 'package:aastu_hub/screens/grade_calculator_screen.dart';
-import 'package:aastu_hub/screens/senior_calendar_screen.dart';
+import 'package:aastu_hub/screens/calendar/senior_calendar_screen.dart';
+import 'package:aastu_hub/screens/grades/dashboard_screen.dart';
+import 'package:aastu_hub/screens/grades/grade_calculator_screen.dart';
 import 'package:get/get.dart';
 
-import '../screens/login_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/signup_screen.dart';
 import '../screens/main_layout_screen.dart';
-import '../screens/signup_screen.dart';
 import '../utils/initial_navigation_middleware.dart';
 
 class AppRoutes {
@@ -18,9 +19,9 @@ class AppRoutes {
   static String get aboutUsRoute => '/about-us';
   static String get settingsRoute => '/settings';
   static String get routeDetailRoute => '/route-detail';
-  static String get seniorCalendar => '/home-screen';
-  static String get gradeCalculator => '/trip-history';
-  static String get tripHistoryDetailRoute => '/trip-history-detail';
+  static String get seniorCalendar => '/senior-calendar';
+  static String get gradeCalculator => '/grade-calculator';
+  static String get myGrade => '/my-grade';
   static String get signupRoute => '/signup';
   static String get loginRoute => '/login';
   static String get mainLayoutRoute => '/home';
@@ -65,6 +66,11 @@ class Pages {
     //   page: () => const RouteDetailScreen(),
     // ),
     GetPage(
+      name: AppRoutes.myGrade,
+      page: () => DashboardScreen(),
+      middlewares: [InitialNavigationMiddleware()],
+    ),
+    GetPage(
       name: AppRoutes.seniorCalendar,
       page: () => SeniorCalendar(),
     ),
@@ -83,7 +89,6 @@ class Pages {
     GetPage(
       name: AppRoutes.mainLayoutRoute,
       page: () => MainLayoutScreen(),
-      middlewares: [InitialNavigationMiddleware()],
     ),
   ];
 }

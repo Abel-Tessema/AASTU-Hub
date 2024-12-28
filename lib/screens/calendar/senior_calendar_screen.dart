@@ -1,9 +1,9 @@
-import 'package:aastu_hub/screens/table_view.dart';
-import 'package:aastu_hub/screens/time_line_view.dart';
+import 'package:aastu_hub/screens/calendar/views/table_view.dart';
+import 'package:aastu_hub/screens/calendar/views/time_line_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/senior_calendar_tab_controller.dart';
+import '../../controllers/senior_calendar_tab_controller.dart';
 
 class SeniorCalendar extends StatelessWidget {
   SeniorCalendar({super.key});

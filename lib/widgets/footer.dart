@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../screens/login_screen.dart';
-import '../screens/signup_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/signup_screen.dart';
 
 class Footer extends StatelessWidget {
   final bool isLogin;

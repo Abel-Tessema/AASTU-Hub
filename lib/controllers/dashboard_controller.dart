@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/grade_data.dart';
+import '../services/dio_service.dart';
 
 class GradesController extends GetxController {
   final grades = <GradeData>[].obs;
@@ -18,27 +19,35 @@ class GradesController extends GetxController {
     isLoading.value = true;
     error.value = '';
 
-    try {
-      final supabase = Supabase.instance.client;
-      final user = supabase.auth.currentUser;
+    final user = Supabase.instance.client.auth.currentUser;
 
-      if (user == null) {
-        throw Exception('User not logged in');
-      }
-
-      final response =
-          await supabase.from('Grades').select('*').eq('userId', user.id);
-
-      if (response.isEmpty) {
-        throw Exception('No grades found');
-      }
-
-      final data = response as List<dynamic>;
-      grades.value = data.map((item) => GradeData.fromJson(item)).toList();
-    } catch (e) {
-      error.value = e.toString();
-    } finally {
+    if (user == null) {
+      error.value = 'User not logged in';
       isLoading.value = false;
+      return;
     }
+
+    // Construct the URL path
+    final path = "/Grades?select=*&userId=eq.${user.id}";
+
+    // Use DioService to fetch grades
+    await DioService.dioGet(
+      path: path,
+      onSuccess: (response) {
+        // Parse response data
+        final data = response.data as List<dynamic>;
+        if (data.isEmpty) {
+          error.value = 'No grades found';
+          return;
+        }
+        grades.value = data.map((item) => GradeData.fromJson(item)).toList();
+      },
+      onFailure: (error, response) {
+        // Handle failure
+        this.error.value = "Failed to fetch grades: $error";
+      },
+    );
+
+    isLoading.value = false;
   }
 }

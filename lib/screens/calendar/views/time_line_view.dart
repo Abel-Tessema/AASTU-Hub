@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 
-import '../controllers/calendar_data_controller.dart';
-import '../widgets/glowing_dot_indicator.dart';
+import '../../../controllers/calendar_data_controller.dart';
+import '../../../widgets/glowing_dot_indicator.dart';
 
 class TimeLineView extends StatelessWidget {
   TimeLineView({super.key});
