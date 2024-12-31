@@ -4,6 +4,7 @@ class MainButton extends StatelessWidget {
   final double height;
   final double width;
   final String text;
+  final Color? color;
   final Function() onPress;
   final bool isLoading;
 
@@ -13,7 +14,8 @@ class MainButton extends StatelessWidget {
       this.height = 65,
       this.width = double.infinity,
       required this.text,
-      required this.onPress});
+      required this.onPress,
+      this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,8 @@ class MainButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPress,
         style: ButtonStyle(
-          backgroundColor: const WidgetStatePropertyAll(Color(0xFF4B39EF)),
+          backgroundColor: WidgetStatePropertyAll(
+              color ?? Theme.of(context).colorScheme.primary),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
