@@ -1,4 +1,4 @@
-import 'package:aastu_hub/widgets/loading_animation_button.dart';
+import 'package:aastu_hub/widgets/buttons/loading_animation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

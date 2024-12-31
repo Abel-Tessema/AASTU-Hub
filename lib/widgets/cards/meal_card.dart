@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../config/constants.dart';
-import '../utils/cached_image_wrapper.dart';
+import '../../config/constants.dart';
+import '../../utils/cached_image_wrapper.dart';
 
-class CafeMealCard extends StatelessWidget {
+class MealCard extends StatelessWidget {
   final String image;
   final String name;
   final String description;
-  const CafeMealCard({
+  const MealCard({
     super.key,
     required this.image,
     required this.name,

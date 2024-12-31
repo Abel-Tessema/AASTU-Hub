@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/dio_service.dart';
 
-class CalendarDataController extends GetxController {
+class SeniorCalendarDataController extends GetxController {
   final SupabaseClient supabase = Supabase.instance.client;
 
   var isLoading = true.obs;

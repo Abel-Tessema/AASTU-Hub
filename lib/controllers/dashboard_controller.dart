@@ -15,6 +15,9 @@ class GradesController extends GetxController {
     fetchGrades();
   }
 
+  final RxString selectedYear = ''.obs;
+  final RxString selectedSemester = ''.obs;
+
   Future<void> fetchGrades() async {
     isLoading.value = true;
     error.value = '';
@@ -41,6 +44,8 @@ class GradesController extends GetxController {
           return;
         }
         grades.value = data.map((item) => GradeData.fromJson(item)).toList();
+        grades.sort((a, b) => b.year!.compareTo(a.year!));
+        selectedYear.value = grades.first.year.toString();
       },
       onFailure: (error, response) {
         // Handle failure

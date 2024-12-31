@@ -10,6 +10,7 @@ class UserController extends GetxController {
   var isLoading = false.obs;
   static final Rx<User?> loggedInUser =
       Supabase.instance.client.auth.currentUser.obs;
+  static final RxBool isLoggedIn = false.obs;
   var loggingIn = false.obs;
   var signingUp = false.obs;
   TextEditingController emailTextEditingController = TextEditingController();
@@ -41,6 +42,8 @@ class UserController extends GetxController {
       await UserService().signIn(
           email: emailTextEditingController.text,
           password: passwordTextEditingController.text);
+      isLoggedIn.value = true;
+      loggedInUser.value = Supabase.instance.client.auth.currentUser;
       Get.offNamed(AppRoutes.mainLayoutRoute);
       loggingIn.value = false;
     } catch (e, s) {
@@ -50,8 +53,14 @@ class UserController extends GetxController {
     }
   }
 
+  var hasAgreedToTerms = false.obs;
   void signUp() async {
     if (formKey.currentState!.validate() == false) return;
+    if (!hasAgreedToTerms.value) {
+      Get.snackbar('Error',
+          'Please agree to the terms and conditions and privacy policy');
+      return;
+    }
     try {
       signingUp.value = true;
       await UserService().signUp(

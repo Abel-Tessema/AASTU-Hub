@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../controllers/cafe_schedule_controller.dart';
 import '../../models/cafe_schedule.dart';
-import '../../widgets/cafe_meal_card.dart';
+import '../../widgets/cards/meal_card.dart';
 
 class CafeScheduleScreen extends StatelessWidget {
   final CafeScheduleController controller = Get.put(CafeScheduleController());
@@ -55,10 +55,13 @@ class CafeScheduleScreen extends StatelessWidget {
                     final startTime =
                         DateFormat.jm().format(schedule.startTime);
                     final endTime = DateFormat.jm().format(schedule.endTime);
-                    return CafeMealCard(
-                      image: schedule.mealImageUrl ?? '',
-                      name: schedule.mealName,
-                      description: '$startTime - $endTime',
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: MealCard(
+                        image: schedule.mealImageUrl ?? '',
+                        name: schedule.mealName,
+                        description: '$startTime - $endTime',
+                      ),
                     );
                   }),
                 ],

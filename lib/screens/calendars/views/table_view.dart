@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../controllers/calendar_data_controller.dart';
-
 class TableView extends StatelessWidget {
-  TableView({super.key});
+  final List<CalendarEventData> events;
+  TableView({super.key, required this.events});
 
-  final CalendarDataController controller = Get.find();
   final ScrollController scrollController = ScrollController();
   final List<GlobalKey> eventKeys = [];
   final TextEditingController searchController = TextEditingController();
@@ -24,28 +22,28 @@ class TableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize filtered events with the original list
-    filteredEvents.assignAll(controller.events);
+    filteredEvents.assignAll(events);
 
     void filterByPastEvent() {
-      filteredEvents.assignAll(controller.events.where((event) {
+      filteredEvents.assignAll(events.where((event) {
         return event.date.isBefore(DateTime.now());
       }));
     }
 
     void filterByFutureEvent() {
-      filteredEvents.assignAll(controller.events.where((event) {
+      filteredEvents.assignAll(events.where((event) {
         return event.date.isAfter(DateTime.now());
       }));
     }
 
     void filterByExam() {
-      filteredEvents.assignAll(controller.events.where((event) {
+      filteredEvents.assignAll(events.where((event) {
         return event.title.toLowerCase().contains('exam');
       }));
     }
 
     void clearFilters() {
-      filteredEvents.assignAll(controller.events);
+      filteredEvents.assignAll(events);
       searchController.clear();
       searchQuery.value = '';
     }
@@ -63,7 +61,7 @@ class TableView extends StatelessWidget {
     }
 
     void applySearch(String query) {
-      final results = controller.events
+      final results = events
           .asMap()
           .entries
           .where((entry) =>
@@ -101,7 +99,7 @@ class TableView extends StatelessWidget {
 
     int? findNearestEventIndex() {
       final today = DateTime.now();
-      final nearestIndex = controller.events
+      final nearestIndex = events
           .asMap()
           .entries
           .map((entry) => MapEntry(
@@ -114,7 +112,7 @@ class TableView extends StatelessWidget {
 
     void scrollToRelevantEvent() {
       final today = DateTime.now();
-      int? index = controller.events.indexWhere((event) =>
+      int? index = events.indexWhere((event) =>
           event.date.year == today.year &&
           event.date.month == today.month &&
           event.date.day == today.day);
@@ -140,8 +138,7 @@ class TableView extends StatelessWidget {
     }
 
     void checkIfCurrentDayOffscreen() {
-      final todayIndex =
-          controller.events.indexWhere((event) => shouldGlow(event));
+      final todayIndex = events.indexWhere((event) => shouldGlow(event));
 
       if (todayIndex != -1 && eventKeys[todayIndex].currentContext != null) {
         final renderObject =
@@ -255,11 +252,7 @@ class TableView extends StatelessWidget {
         ),
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.events.isEmpty) {
+        if (events.isEmpty) {
           return const Center(child: Text('No events available.'));
         }
 

@@ -18,88 +18,92 @@ class DashboardScreen extends StatelessWidget {
     return Color.lerp(startColor, endColor, t)!;
   }
 
-  final RxString selectedYear = ''.obs;
-  final RxString selectedSemester = ''.obs;
   @override
   Widget build(BuildContext context) {
-    controller.grades.sort((a, b) => b.year!.compareTo(a.year!));
-    selectedYear.value = controller.grades.first.year.toString();
-    return SafeArea(
-      child: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (controller.error.isNotEmpty) {
-          return Center(child: Text('Error: ${controller.error.value}'));
-        } else if (controller.grades.isEmpty) {
-          return const Center(child: Text('No grades available'));
-        }
-        final groupedByYear = _groupByYear(controller.grades);
-        // Handle multiple years
-        if (groupedByYear.length > 1) {
-          selectedYear.value = selectedYear.value.isNotEmpty
-              ? selectedYear.value
-              : groupedByYear.keys.last;
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('CGPA Over The Years',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Flexible(
-                        fit: FlexFit.loose,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Container(
-                              height: MediaQuery.of(context).size.height * 0.25,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: kCardShadow()),
-                              child:
-                                  _buildYearBarGraph(context, groupedByYear)),
-                        )),
-                    const SizedBox(height: 16),
-                    Flexible(
-                        fit: FlexFit.loose,
-                        child: _buildYearDetails(
-                            context, groupedByYear[selectedYear.value]!)),
-                    const SizedBox(height: 16),
-                    // Expanded(
-                    //     child:
-                    //         GradeStatisticsWidget(gradeDataList: controller.grades))
-                  ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Grades'),
+      ),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (controller.error.isNotEmpty) {
+            return Center(child: Text('Error: ${controller.error.value}'));
+          } else if (controller.grades.isEmpty) {
+            return const Center(child: Text('No grades available'));
+          }
+
+          final groupedByYear = _groupByYear(controller.grades);
+          // Handle multiple years
+          if (groupedByYear.length > 1) {
+            controller.selectedYear.value =
+                controller.selectedYear.value.isNotEmpty
+                    ? controller.selectedYear.value
+                    : groupedByYear.keys.last;
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('CGPA Over The Years',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(fontWeight: FontWeight.bold)),
+                      Flexible(
+                          fit: FlexFit.loose,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).cardColor,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: kCardShadow()),
+                                child:
+                                    _buildYearBarGraph(context, groupedByYear)),
+                          )),
+                      const SizedBox(height: 16),
+                      Flexible(
+                          fit: FlexFit.loose,
+                          child: _buildYearDetails(context,
+                              groupedByYear[controller.selectedYear.value]!)),
+                      const SizedBox(height: 16),
+                      // Expanded(
+                      //     child:
+                      //         GradeStatisticsWidget(gradeDataList: controller.grades))
+                    ],
+                  ),
                 ),
               ),
+            );
+          }
+
+          // Handle single year
+          controller.selectedYear.value = groupedByYear.keys.first;
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                    fit: FlexFit.loose,
+                    child: _buildYearDetails(context,
+                        groupedByYear[controller.selectedYear.value]!)),
+                const SizedBox(height: 16),
+                // Flexible(
+                //     fit: FlexFit.loose,
+                //     child:
+                //         GradeStatisticsWidget(gradeDataList: controller.grades))
+              ],
             ),
           );
-        }
-
-        // Handle single year
-        selectedYear.value = groupedByYear.keys.first;
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                  fit: FlexFit.loose,
-                  child: _buildYearDetails(
-                      context, groupedByYear[selectedYear.value]!)),
-              const SizedBox(height: 16),
-              // Flexible(
-              //     fit: FlexFit.loose,
-              //     child:
-              //         GradeStatisticsWidget(gradeDataList: controller.grades))
-            ],
-          ),
-        );
-      }),
+        }),
+      ),
     );
   }
 
@@ -108,9 +112,10 @@ class DashboardScreen extends StatelessWidget {
 
     // Handle multiple semesters
     if (groupedBySemester.length > 1) {
-      selectedSemester.value = selectedSemester.value.isNotEmpty
-          ? selectedSemester.value
-          : groupedBySemester.keys.last;
+      controller.selectedSemester.value =
+          controller.selectedSemester.value.isNotEmpty
+              ? controller.selectedSemester.value
+              : groupedBySemester.keys.last;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -124,15 +129,15 @@ class DashboardScreen extends StatelessWidget {
           _buildSemesterPieChart(context, groupedBySemester),
           const SizedBox(height: 16),
           _buildCourseBarGraph(
-              context, groupedBySemester[selectedSemester.value]!),
+              context, groupedBySemester[controller.selectedSemester.value]!),
         ],
       );
     }
 
     // Handle single semester
-    selectedSemester.value = groupedBySemester.keys.first;
+    controller.selectedSemester.value = groupedBySemester.keys.first;
     return _buildCourseBarGraph(
-        context, groupedBySemester[selectedSemester.value]!);
+        context, groupedBySemester[controller.selectedSemester.value]!);
   }
 
   Map<String, List<GradeData>> _groupByYear(List<GradeData> grades) {
@@ -180,7 +185,7 @@ class DashboardScreen extends StatelessWidget {
         // Detect tapped bar and update the selected year
         final tapIndex = details.localPosition.dx ~/
             (MediaQuery.of(context).size.width / groupedByYear.length);
-        selectedYear.value = years[tapIndex];
+        controller.selectedYear.value = years[tapIndex];
       },
       child: BarChart(
         BarChartData(
@@ -261,12 +266,12 @@ class DashboardScreen extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child:
-              Text('Semester ${selectedSemester.value}, ${selectedYear.value}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  )),
+          child: Text(
+              'Semester ${controller.selectedSemester.value}, ${controller.selectedYear.value}',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              )),
         ),
         Padding(
           padding: const EdgeInsets.all(12.0),
@@ -397,7 +402,7 @@ class DashboardScreen extends StatelessWidget {
                     groupedBySemester.keys.toList()[touchedIndex];
 
                 // Update selectedSemester
-                selectedSemester.value = selectedKey;
+                controller.selectedSemester.value = selectedKey;
               },
             ),
           ),

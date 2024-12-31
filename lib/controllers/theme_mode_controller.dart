@@ -11,6 +11,7 @@ class ThemeModeController extends GetxController {
   ThemeModeController(BuildContext context) {
     _context = context;
   }
+
   @override
   void onInit() {
     super.onInit();

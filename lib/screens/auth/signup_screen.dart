@@ -7,9 +7,11 @@ import 'package:get/get.dart';
 import '../../../utils/animations.dart';
 import '../../../widgets/footer.dart';
 import '../../../widgets/input_field.dart';
-import '../../../widgets/loading_animation_button.dart';
-import '../../../widgets/main_button.dart';
 import '../../controllers/auth_controller.dart';
+import '../../widgets/buttons/loading_animation_button.dart';
+import '../../widgets/buttons/main_button.dart';
+import '../settings/app_info/privacy_policy_screen.dart';
+import '../settings/app_info/terms_and_conditions_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -165,6 +167,9 @@ class _SignupScreenState extends State<SignupScreen>
                         : MainButton(
                             isLoading: signUpController.isLoading.value,
                             onPress: () => signUpController.signUp(),
+                            color: signUpController.hasAgreedToTerms.value
+                                ? null
+                                : Colors.grey,
                             text: 'Create Account',
                           ),
                   ),
@@ -246,7 +251,52 @@ class _SignupScreenState extends State<SignupScreen>
                 return null;
               },
               obscureText: false,
-              passwordinput: false)
+              passwordinput: false),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Obx(
+                  () => Checkbox(
+                      value: signUpController.hasAgreedToTerms.value,
+                      onChanged: (agreed) {
+                        signUpController.hasAgreedToTerms.value =
+                            !signUpController.hasAgreedToTerms.value;
+                      }),
+                ),
+                Flexible(
+                  child: Wrap(
+                    children: [
+                      const Text(
+                        'I agree to the ',
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const TermsAndConditionsScreen());
+                        },
+                        child: const Text(
+                          'Terms and Conditions',
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                      const Text(' and the '),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const PrivacyPolicyScreen());
+                        },
+                        child: const Text(
+                          'Privacy Policy',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

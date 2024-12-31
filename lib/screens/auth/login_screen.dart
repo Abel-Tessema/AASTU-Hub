@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import '../../../utils/animations.dart';
 import '../../../widgets/footer.dart';
 import '../../../widgets/input_field.dart';
-import '../../../widgets/loading_animation_button.dart';
-import '../../../widgets/main_button.dart';
 import '../../controllers/auth_controller.dart';
+import '../../widgets/buttons/loading_animation_button.dart';
+import '../../widgets/buttons/main_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

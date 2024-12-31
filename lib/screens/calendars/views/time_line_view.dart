@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 
-import '../../../controllers/calendar_data_controller.dart';
 import '../../../widgets/glowing_dot_indicator.dart';
 
 class TimeLineView extends StatelessWidget {
-  TimeLineView({super.key});
-  final CalendarDataController controller = Get.put(CalendarDataController());
+  final List<CalendarEventData> events;
+  TimeLineView({super.key, required this.events});
+
   final List<GlobalKey> eventKeys = [];
   final ScrollController scrollController = ScrollController();
   final TextEditingController searchController = TextEditingController();
@@ -75,15 +75,11 @@ class TimeLineView extends StatelessWidget {
         ),
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.events.isEmpty) {
+        if (events.isEmpty) {
           return const Center(child: Text('No events available.'));
         }
 
-        while (eventKeys.length < controller.events.length) {
+        while (eventKeys.length < events.length) {
           eventKeys.add(GlobalKey());
         }
 
@@ -103,7 +99,7 @@ class TimeLineView extends StatelessWidget {
               builder: TimelineTileBuilder.connected(
                 contentsAlign: ContentsAlign.alternating,
                 contentsBuilder: (context, index) {
-                  final event = controller.events[index];
+                  final event = events[index];
                   return Obx(() {
                     final isHighlighted = index == highlightedEventIndex.value;
                     return AnimatedContainer(
@@ -126,9 +122,19 @@ class TimeLineView extends StatelessWidget {
                                     : null,
                                 fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                            DateFormat.yMMMMd().format(event.date),
-                            style: const TextStyle(color: Colors.grey),
+                          Row(
+                            children: [
+                              Text(
+                                DateFormat.yMMMd().format(event.date),
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 11),
+                              ),
+                              if (!event.endDate.isAtSameMomentAs(event.date))
+                                Text(
+                                    ' - ${DateFormat.yMMMd().format(event.endDate)}',
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 11)),
+                            ],
                           ),
                         ],
                       ),
@@ -136,7 +142,7 @@ class TimeLineView extends StatelessWidget {
                   });
                 },
                 indicatorBuilder: (context, index) {
-                  final event = controller.events[index];
+                  final event = events[index];
                   return Obx(() {
                     final isHighlighted = index == highlightedEventIndex.value;
                     return _shouldGlow(event)
@@ -160,14 +166,14 @@ class TimeLineView extends StatelessWidget {
                   });
                 },
                 connectorBuilder: (context, index, connectorType) {
-                  final event = controller.events[index];
+                  final event = events[index];
                   return SolidLineConnector(
                     color: _shouldGlow(event)
                         ? const Color(0xFF4B39EF)
                         : Colors.grey,
                   );
                 },
-                itemCount: controller.events.length,
+                itemCount: events.length,
               ),
             ),
           ),
@@ -210,7 +216,7 @@ class TimeLineView extends StatelessWidget {
 
   void scrollToRelevantEvent() {
     final today = DateTime.now();
-    int? index = controller.events.indexWhere((event) =>
+    int? index = events.indexWhere((event) =>
         event.date.year == today.year &&
         event.date.month == today.month &&
         event.date.day == today.day);
@@ -229,7 +235,7 @@ class TimeLineView extends StatelessWidget {
   }
 
   void _searchEvent(String query) {
-    final results = controller.events
+    final results = events
         .asMap()
         .entries
         .where((entry) =>
@@ -279,7 +285,7 @@ class TimeLineView extends StatelessWidget {
 
   int? _findNearestEventIndex() {
     final today = DateTime.now();
-    final nearestIndex = controller.events
+    final nearestIndex = events
         .asMap()
         .entries
         .map((entry) => MapEntry(
@@ -291,8 +297,7 @@ class TimeLineView extends StatelessWidget {
   }
 
   void _checkIfCurrentDayOffscreen() {
-    final todayIndex =
-        controller.events.indexWhere((event) => _shouldGlow(event));
+    final todayIndex = events.indexWhere((event) => _shouldGlow(event));
 
     if (todayIndex != -1 && eventKeys[todayIndex].currentContext != null) {
       final renderObject =
