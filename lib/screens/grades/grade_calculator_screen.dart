@@ -100,7 +100,6 @@ class GradeCalculator extends StatelessWidget {
 
             const SizedBox(height: 16),
             Expanded(
-              flex: 2,
               child: Obx(
                 () => ListView.builder(
                   itemCount: controller.courses.length,

@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen>
                             onTap: () {},
                             borderRadius: 20,
                             height: 65,
-                            child: Text(
+                            child: const Text(
                               'Login',
                               style: TextStyle(color: Color(0xFF4B39EF)),
                             ),

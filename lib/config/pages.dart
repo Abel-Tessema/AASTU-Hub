@@ -42,10 +42,6 @@ class AppRoutes {
 
 class Pages {
   static final pages = [
-    // GetPage(
-    //   name: AppRoutes.forgotPasswordRoute,
-    //   page: () => const ForgotPasswordScreen(),
-    // ),
     GetPage(
       name: AppRoutes.loungeRoute,
       page: () => LoungeScreen(),

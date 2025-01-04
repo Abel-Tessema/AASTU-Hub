@@ -7,7 +7,6 @@ class MainLayoutController extends GetxController {
 
   @override
   void onInit() {
-    // UserController.getLoggedInUser();
     controller = PersistentTabController();
     super.onInit();
   }
