@@ -2,9 +2,7 @@ import 'package:aastu_hub/screens/calendars/views/table_view.dart';
 import 'package:aastu_hub/screens/calendars/views/time_line_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
-import '../../controllers/auth_controller.dart';
 import '../../controllers/senior_calendar_data_controller.dart';
 import '../../controllers/senior_calendar_tab_controller.dart';
 
@@ -19,7 +17,6 @@ class SeniorCalendarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logger().d(UserController.loggedInUser.value!.userMetadata);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Senior Calendar'),

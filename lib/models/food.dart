@@ -4,7 +4,7 @@ class LoungeFood {
   final double? rating;
   final Food food;
 
-  LoungeFood({
+  const LoungeFood({
     required this.id,
     this.price,
     this.rating,
@@ -27,7 +27,7 @@ class Food {
   final String? imageUrl;
   final bool? isFasting;
 
-  Food({
+  const Food({
     required this.name,
     this.description,
     this.imageUrl,

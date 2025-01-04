@@ -36,7 +36,7 @@ class SeniorCalendarDataController extends GetxController {
             return CalendarEventData(
               date: startDate,
               startTime: startDate,
-              endTime: isSingleDay
+              endDate: isSingleDay
                   ? startDate.add(const Duration(hours: 1))
                   : endDate,
               title: event['event'] ?? 'No Title',

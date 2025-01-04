@@ -8,14 +8,6 @@ import '../../widgets/lounge_top_section.dart';
 
 class LoungeDetailScreen extends StatelessWidget {
   LoungeDetailScreen({super.key});
-
-  // Define an initial position for the draggable FAB
-  final Rx<Offset> fabPosition = Offset(
-    MediaQuery.of(Get.context!).size.width -
-        MediaQuery.of(Get.context!).size.width * 0.18,
-    MediaQuery.of(Get.context!).size.height -
-        MediaQuery.of(Get.context!).size.height * 0.12,
-  ).obs;
   final controller = Get.put(LoungeController());
   @override
   Widget build(BuildContext context) {

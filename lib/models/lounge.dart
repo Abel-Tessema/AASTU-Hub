@@ -15,7 +15,7 @@ class Lounge {
   final List<LoungeFood>? foods;
   final List<LoungeBeverage>? beverages;
 
-  Lounge(
+  const Lounge(
       {this.id,
       this.startTime,
       this.endTime,

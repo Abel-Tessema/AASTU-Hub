@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 ColorScheme appColor([bool? isDark]) => ColorScheme.fromSeed(
-    seedColor: Color(0xFF4B39EF),
-    primary: Color(0xFF4B39EF),
-    secondary: Color(0xFFEE8B60),
+    seedColor: const Color(0xFF4B39EF),
+    primary: const Color(0xFF4B39EF),
+    secondary: const Color(0xFFEE8B60),
     dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
     brightness: isDark == null
         ? Brightness.light
@@ -14,12 +14,12 @@ ColorScheme appColor([bool? isDark]) => ColorScheme.fromSeed(
 ThemeData appTheme(BuildContext context, {bool? isDark}) {
   ColorScheme themeColor = appColor(isDark);
   return ThemeData(
-      primaryColor: Color(0xFF4B39EF),
+      primaryColor: const Color(0xFF4B39EF),
       colorScheme: themeColor,
       fontFamily: 'Outfit',
       useMaterial3: true,
       iconTheme: IconThemeData(
-        color: (isDark ?? true) ? Colors.white : Color(0xFF4B39EF),
+        color: (isDark ?? true) ? Colors.white : const Color(0xFF4B39EF),
       ),
       tabBarTheme: TabBarTheme(
         labelStyle: TextStyle(

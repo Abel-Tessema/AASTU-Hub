@@ -7,7 +7,7 @@ class Department {
   final int? roomNumber;
   final bool? isEngineering;
 
-  Department({
+  const Department({
     this.id,
     this.createdAt,
     this.name,

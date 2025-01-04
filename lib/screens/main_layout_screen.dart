@@ -34,7 +34,6 @@ class MainLayoutScreen extends StatelessWidget {
       confineToSafeArea: true,
       backgroundColor: Theme.of(context).cardColor,
       controller: controller.controller,
-      // margin: const EdgeInsets.all(16),
       decoration: NavBarDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(40),
@@ -64,7 +63,6 @@ class MainLayoutScreen extends StatelessWidget {
           duration: Duration(milliseconds: 200),
         ),
       ),
-      // navBarHeight: 50,
       navBarStyle: NavBarStyle.style6,
     );
   }

@@ -6,7 +6,7 @@ class GradeData {
   final String? semester;
   final num? year;
 
-  GradeData({
+  const GradeData({
     this.courseName,
     this.grade,
     this.gpaWeight,

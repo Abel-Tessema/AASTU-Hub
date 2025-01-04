@@ -34,60 +34,60 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
   Widget build(BuildContext context) {
     if (widget.passwordinput) {
       return Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-        child: Container(
+        padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+        child: SizedBox(
           width: double.infinity,
           child: TextFormField(
               controller: widget.textEditingController,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
               focusNode: widget.focusNode,
               autofocus: false,
               maxLength: widget.maxlength,
               onChanged: widget.onChanged,
-              autofillHints: [AutofillHints.password],
-              obscureText: !widget.obscureText ?? false,
+              autofillHints: const [AutofillHints.password],
+              obscureText: !widget.obscureText,
               decoration: InputDecoration(
                 labelText: widget.label,
                 hintText: widget.hint,
-                hintStyle: TextStyle(color: Colors.black),
-                labelStyle: TextStyle(color: Colors.black),
+                hintStyle: const TextStyle(color: Colors.black),
+                labelStyle: const TextStyle(color: Colors.black),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.white,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFF4B39EF),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.red,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.red,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
-                fillColor: Color(0xFFF1F4F8),
+                fillColor: const Color(0xFFF1F4F8),
                 suffixIcon: InkWell(
                   onTap: () => setState(
                     () => widget.obscureText = !widget.obscureText,
                   ),
                   focusNode: FocusNode(skipTraversal: true),
                   child: Icon(
-                    widget.obscureText!
+                    widget.obscureText
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
                     color: Colors.grey,
@@ -101,54 +101,54 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
       );
     } else {
       return Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-        child: Container(
+        padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+        child: SizedBox(
           width: double.infinity,
           child: TextFormField(
             controller: widget.textEditingController,
             focusNode: widget.focusNode,
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             autofocus: false,
             maxLength: widget.maxlength,
             onChanged: widget.onChanged,
-            autofillHints: [AutofillHints.password],
-            obscureText: widget.obscureText!,
+            autofillHints: const [AutofillHints.password],
+            obscureText: widget.obscureText,
             decoration: InputDecoration(
               icon: widget.prefixIcon,
               labelText: widget.label,
               hintText: widget.hint,
-              hintStyle: TextStyle(color: Colors.black),
-              labelStyle: TextStyle(color: Colors.black),
+              hintStyle: const TextStyle(color: Colors.black),
+              labelStyle: const TextStyle(color: Colors.black),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.white,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Color(0xFF4B39EF),
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.red,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.red,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
               filled: true,
-              fillColor: Color(0xFFF1F4F8),
+              fillColor: const Color(0xFFF1F4F8),
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: widget.validator,

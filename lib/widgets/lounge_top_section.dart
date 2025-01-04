@@ -10,13 +10,11 @@ class LoungeDetailScreenTopSection extends StatelessWidget {
   final String image;
   final String name;
   final Location location;
-  // final bool favorited;
-  LoungeDetailScreenTopSection({
+  const LoungeDetailScreenTopSection({
     super.key,
     required this.image,
     required this.name,
     required this.location,
-    // required this.favorited,
   });
   @override
   Widget build(BuildContext context) {
@@ -52,7 +50,6 @@ class LoungeDetailScreenTopSection extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: const BoxDecoration(
-                  // color: maincolor,
                   shape: BoxShape.circle,
                 ),
                 child: ClipRRect(
@@ -77,7 +74,6 @@ class LoungeDetailScreenTopSection extends StatelessWidget {
                 width: 50,
                 height: 50,
                 decoration: const BoxDecoration(
-                  // color: maincolor,
                   shape: BoxShape.circle,
                 ),
                 child: ClipRRect(
@@ -89,21 +85,6 @@ class LoungeDetailScreenTopSection extends StatelessWidget {
                 ),
               ),
             ),
-            // Container(
-            //   width: 50,
-            //   height: 50,
-            //   decoration: const BoxDecoration(
-            //     // color: maincolor,
-            //     shape: BoxShape.circle,
-            //   ),
-            //   child: ClipRRect(
-            //     borderRadius: BorderRadius.circular(100),
-            //     child: Image.network(
-            //       'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Column(

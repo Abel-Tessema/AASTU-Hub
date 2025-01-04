@@ -66,6 +66,7 @@ class GradeCalculatorController extends GetxController {
         "Error",
         "You must be logged in to save scores.",
       );
+      isLoading.value = false;
       return;
     }
 
@@ -74,6 +75,7 @@ class GradeCalculatorController extends GetxController {
         "Error",
         "Please provide semester and year.",
       );
+      isLoading.value = false;
       return;
     }
 
@@ -83,6 +85,7 @@ class GradeCalculatorController extends GetxController {
           "Error",
           "Please fill all fields for all courses.",
         );
+        isLoading.value = false;
         return;
       }
 

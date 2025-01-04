@@ -85,12 +85,12 @@ class TimeLineView extends StatelessWidget {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           scrollToRelevantEvent();
-          _checkIfCurrentDayOffscreen();
+          _checkIfCurrentDayOffscreen(context);
         });
 
         return NotificationListener<ScrollNotification>(
           onNotification: (notification) {
-            _checkIfCurrentDayOffscreen();
+            _checkIfCurrentDayOffscreen(context);
             return true;
           },
           child: SingleChildScrollView(
@@ -125,13 +125,17 @@ class TimeLineView extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                DateFormat.yMMMd().format(event.date),
+                                event.date.year == event.endDate.year &&
+                                        !event.endDate
+                                            .isAtSameMomentAs(event.date)
+                                    ? DateFormat.MMMd().format(event.date)
+                                    : DateFormat.yMMMd().format(event.date),
                                 style: const TextStyle(
                                     color: Colors.grey, fontSize: 11),
                               ),
                               if (!event.endDate.isAtSameMomentAs(event.date))
                                 Text(
-                                    ' - ${DateFormat.yMMMd().format(event.endDate)}',
+                                    ' – ${DateFormat.yMMMd().format(event.endDate)}',
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 11)),
                             ],
@@ -296,7 +300,7 @@ class TimeLineView extends StatelessWidget {
     return nearestIndex;
   }
 
-  void _checkIfCurrentDayOffscreen() {
+  void _checkIfCurrentDayOffscreen(BuildContext context) {
     final todayIndex = events.indexWhere((event) => _shouldGlow(event));
 
     if (todayIndex != -1 && eventKeys[todayIndex].currentContext != null) {
@@ -305,7 +309,7 @@ class TimeLineView extends StatelessWidget {
       if (renderObject is RenderBox) {
         final position = renderObject.localToGlobal(Offset.zero);
         final screenHeight =
-            MediaQueryData.fromView(WidgetsBinding.instance.window).size.height;
+            MediaQueryData.fromView(View.of(context)).size.height;
 
         final isAboveScreen = position.dy < 0;
         final isBelowScreen = position.dy > screenHeight;

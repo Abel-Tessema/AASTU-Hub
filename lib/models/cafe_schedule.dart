@@ -7,7 +7,7 @@ class CafeSchedule {
   final DateTime startTime;
   final DateTime endTime;
 
-  CafeSchedule({
+  const CafeSchedule({
     required this.id,
     required this.dayOfWeek,
     required this.mealName,

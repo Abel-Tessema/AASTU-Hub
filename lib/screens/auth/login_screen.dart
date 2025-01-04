@@ -165,13 +165,13 @@ class _LoginScreenState extends State<LoginScreen>
                   child: Obx(
                     () => signUpController.loggingIn.value
                         ? LoadingAnimatedButton(
+                            onTap: () {},
+                            borderRadius: 20,
+                            height: 65,
                             child: Text(
                               'Login',
                               style: TextStyle(color: Color(0xFF4B39EF)),
                             ),
-                            onTap: () {},
-                            borderRadius: 20,
-                            height: 65,
                           )
                         : MainButton(
                             isLoading: signUpController.isLoading.value,
